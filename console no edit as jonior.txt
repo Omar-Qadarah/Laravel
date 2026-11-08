@@ -1,0 +1,3 @@
+console no edit as jonior
+container..
+vendor+ .env in gitignore
