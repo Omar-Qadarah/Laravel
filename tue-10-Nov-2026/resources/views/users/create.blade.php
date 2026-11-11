@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create User</title>
+    @vite('resources/css/app.css')
 </head>
 <body>
     <h1>Create User</h1>

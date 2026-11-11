@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit User</title>
+    @vite('resources/css/app.css')
 </head>
 <body>
     <h1>Edit User</h1>
