@@ -1,73 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Order</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+@extends('layouts.admin')
 
-<body class="bg-light">
+@section('title', 'Create Order')
 
-    <div class="container py-5">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
+@section('content')
 
-                <h2 class="mb-4">Create Order</h2>
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">Create Order</h2>
+        <p class="text-muted mb-0">Create a new customer order</p>
+    </div>
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+    <!-- Validation Errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger rounded-3">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-                <form action="{{ route('orders.store') }}" method="POST">
-                    @csrf
+    <!-- Order Form -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white border-0 p-4">
+            <h5 class="fw-bold mb-0">Order Information</h5>
+        </div>
 
-                    <div class="mb-4">
-                        <label class="form-label">Customer</label>
-                        <select name="user_id" class="form-select">
-                            <option value="">Choose customer</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+        <div class="card-body p-4">
 
-                    <h5>Products</h5>
+            <form action="{{ route('orders.store') }}" method="POST">
+                @csrf
 
-                    <div class="mb-3">
-                        <label class="form-label">Product</label>
+                <!-- Customer -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Customer</label>
+
+                    <select name="user_id" class="form-select">
+                        <option value="">Choose customer</option>
+
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}"
+                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('user_id')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Products -->
+                <h5 class="fw-bold mb-3">Products</h5>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-8">
+                        <label class="form-label fw-semibold">Product</label>
+
                         <select name="products[0][product_id]" class="form-select">
                             <option value="">Choose product</option>
+
                             @foreach($products as $product)
-                                <option value="{{ $product->id }}" {{ old('products.0.product_id') == $product->id ? 'selected' : '' }}>
+                                <option value="{{ $product->id }}"
+                                    {{ old('products.0.product_id') == $product->id ? 'selected' : '' }}>
                                     {{ $product->name }} — {{ number_format($product->price, 2) }}
                                 </option>
                             @endforeach
                         </select>
 
-                        <label class="form-label mt-2">Quantity</label>
-                        <input type="number" name="products[0][quantity]" class="form-control" min="1"
-                            value="{{ old('products.0.quantity', 1) }}">
+                        @error('products.0.product_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create Order</button>
-                    <a href="{{ route('orders.index') }}" class="btn btn-secondary">Cancel</a>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Quantity</label>
 
-                </form>
+                        <input type="number"
+                               name="products[0][quantity]"
+                               class="form-control"
+                               min="1"
+                               value="{{ old('products.0.quantity', 1) }}">
 
-            </div>
+                        @error('products.0.quantity')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> Create Order
+                    </button>
+
+                    <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
         </div>
     </div>
 
-</body>
-
-</html>
+@endsection

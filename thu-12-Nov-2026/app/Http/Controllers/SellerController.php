@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Seller;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class SellerController extends Controller
 {
@@ -22,7 +23,9 @@ class SellerController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::all();
+
+        return view('sellers.create', compact('users'));
     }
 
     /**
@@ -30,7 +33,15 @@ class SellerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'shop_name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id|unique:sellers,user_id',
+        ]);
+
+        Seller::create($validated);
+
+        return redirect()->route('sellers.index')
+            ->with('success', 'Seller created successfully!');
     }
 
     /**
@@ -38,7 +49,9 @@ class SellerController extends Controller
      */
     public function show(Seller $seller)
     {
-        //
+        $seller->load('products');
+
+        return view('sellers.show', compact('seller'));
     }
 
     /**
@@ -46,7 +59,9 @@ class SellerController extends Controller
      */
     public function edit(Seller $seller)
     {
-        //
+        $users = User::all();
+
+        return view('sellers.edit', compact('seller', 'users'));
     }
 
     /**
@@ -54,14 +69,29 @@ class SellerController extends Controller
      */
     public function update(Request $request, Seller $seller)
     {
-        //
-    }
+        $validated = $request->validate([
+            'shop_name' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id|unique:sellers,user_id,' . $seller->id,
+        ]);
 
+        $seller->update($validated);
+
+        return redirect()->route('sellers.index')
+            ->with('success', 'Seller updated successfully!');
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Seller $seller)
     {
-        //
+        if ($seller->products()->exists()) {
+            return redirect()->route('sellers.index')
+                ->with('error', 'Cannot delete this seller because they still have products.');
+        }
+
+        $seller->delete();
+
+        return redirect()->route('sellers.index')
+            ->with('success', 'Seller deleted successfully!');
     }
 }

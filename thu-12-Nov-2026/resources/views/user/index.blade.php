@@ -1,73 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users Management</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body class="bg-light p-4">
-@if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-<div class="container bg-white p-4 rounded shadow-sm">
-    <!-- Header & Create Button -->
+@extends('layouts.admin')
+
+@section('title', 'Users')
+
+@section('content')
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="m-0">Users List</h3>
-        <a href="{{route('createUser')}}" class="btn btn-primary">
-    <i class="bi bi-person-plus-fill me-1"></i> Create New User
-</a>
+        <div>
+            <h2 class="fw-bold mb-1">Users</h2>
+            <p class="text-muted mb-0">Manage registered users</p>
+        </div>
+
+        <a href="{{ route('createUser') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus-fill me-1"></i> Create New User
+        </a>
     </div>
 
-    <!-- Users Table -->
-    <div class="table-responsive">
-        <table class="table table-hover table-striped align-middle border">
-            <thead class="table-dark">
-                <tr>
-                   
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col" class="text-center">Actions</th>
-                </tr>
-            </thead>
-        
-            <tbody>
-                @foreach($users as $user)
-                <tr>
-                   <td>{{$user->name}}</td>
-                   <td>{{$user->email}}</td>
-                     <td class="text-center">
-                            <div class="d-flex justify-content-center gap-2">
-                                <!-- Update / Edit Button -->
-                                <a href="{{ route('editUser', $user->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
+    @if (session('success'))
+        <div class="alert alert-success rounded-3">
+            {{ session('success') }}
+        </div>
+    @endif
 
-                                <!-- Delete Button (Form for DELETE method) -->
-                                <form action="{{ route('deleteUser', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </button>
-                                </form>
-                                <a href="{{ route('showUser', $user->id) }}" class="btn btn-sm btn-outline-warning" title="view">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                            </div>
-                        </td>
-                </tr>
-                @endforeach                    
-            </tbody>
-        </table>
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-header bg-white border-0 p-4">
+            <h5 class="fw-bold mb-0">All Users</h5>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Name</th>
+                            <th>Email</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse($users as $user)
+                            <tr>
+                                <td class="ps-4 fw-semibold">{{ $user->name }}</td>
+
+                                <td>{{ $user->email }}</td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a href="{{ route('showUser', $user->id) }}" class="btn btn-sm btn-outline-info"
+                                            title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="{{ route('editUser', $user->id) }}" class="btn btn-sm btn-outline-primary"
+                                            title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form action="{{ route('deleteUser', $user->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this user?')">
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="3" class="text-center py-5">
+                                    <h6 class="text-muted">No users found</h6>
+                                    <p class="text-muted mb-0">Start by creating your first user.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
     </div>
-</div>
 
-</body>
-</html>
+@endsection

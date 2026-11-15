@@ -5,12 +5,17 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CatigoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SellerController;
+use App\Http\Controllers\DashboardController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 
-//users
-Route::get('/', [UserController::class, 'index'])->name('listUsers');
+// Dashboard
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+// Users
+Route::get('/users', [UserController::class, 'index'])->name('listUsers');
 Route::get('/userCreate', [UserController::class, 'create'])->name('createUser');
 Route::post('/userStore', [UserController::class, 'store'])->name('storeUser');
 Route::get('/user/{id}', [UserController::class, 'show'])->name('showUser');
@@ -41,3 +46,14 @@ Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
 Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+
+//sellers
+Route::get('/sellers', [SellerController::class, 'index'])->name('sellers.index');
+Route::get('/sellers/create', [SellerController::class, 'create'])->name('sellers.create');
+Route::get('/sellers/{seller}', [SellerController::class, 'show'])->name('sellers.show');
+Route::post('/sellers', [SellerController::class, 'store'])->name('sellers.store');
+Route::get('/sellers/{seller}/edit', [SellerController::class, 'edit'])->name('sellers.edit');
+Route::put('/sellers/{seller}', [SellerController::class, 'update'])->name('sellers.update');
+Route::delete('/sellers/{seller}', [SellerController::class, 'destroy'])->name('sellers.destroy');
+
+
